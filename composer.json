@@ -1,0 +1,31 @@
+{
+  "name": "oilstone/sage-pay",
+  "description": "Sage Pay API integration",
+  "keywords": [
+    "Sage Pay"
+  ],
+  "homepage": "https://github.com/oilstone/sage-pay",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Online Solutions",
+      "email": "support@onlinesolutionsltd.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.0",
+    "illuminate/support": "^5.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Oilstone\\SagePay\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Oilstone\\SagePay\\Integrations\\Laravel\\ServiceProvider"
+      ]
+    }
+  }
+}
