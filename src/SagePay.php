@@ -23,7 +23,17 @@ class SagePay
      * SagePay constructor.
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct(array $config = [])
+    {
+        if ($config) {
+            static::registerConfig($config);
+        }
+    }
+
+    /**
+     * @param array $config
+     */
+    public static function registerConfig(array $config)
     {
         Config::store($config);
     }

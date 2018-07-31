@@ -18,7 +18,7 @@ class ServiceProvider extends LaravelServiceProvider
      */
     public function register()
     {
-        $configPath = __DIR__ . '/../config/sage-pay.php';
+        $configPath = __DIR__ . '/../../../config/sage-pay.php';
 
         $this->mergeConfigFrom($configPath, 'sage-pay');
 
@@ -34,7 +34,7 @@ class ServiceProvider extends LaravelServiceProvider
      */
     public function boot()
     {
-        $configPath = __DIR__ . '/../config/sage-pay.php';
+        $configPath = __DIR__ . '/../../../config/sage-pay.php';
 
         $this->publishes([$configPath => $this->getConfigPath()], 'config');
     }
