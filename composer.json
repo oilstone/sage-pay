@@ -14,7 +14,9 @@
   ],
   "require": {
     "php": ">=7.1.0",
-    "illuminate/support": "^5.5"
+    "guzzlehttp/guzzle": "^6.3",
+    "illuminate/support": "^5.5",
+    "sabre/xml": "^2.0"
   },
   "autoload": {
     "psr-4": {

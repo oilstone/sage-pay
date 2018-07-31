@@ -43,18 +43,6 @@ return [
     'reporting_password' => env('SAGEPAY_WEB_PASSWORD'),
 
     /*
-     * Sage Pay 3D Auth
-     */
-
-    '3d_auth_url' => env('SAGEPAY_3D_AUTH_URL'),
-
-    /*
-     * Sage Pay error codes
-     */
-
-    'batch_report_recipients' => array_filter(explode(",", env('SAGEPAY_BATCH_REPORT_RECIPIENTS'))),
-
-    /*
      * Sage Pay error codes
      */
 
