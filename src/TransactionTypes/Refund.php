@@ -4,6 +4,7 @@ namespace Oilstone\SagePay\TransactionTypes;
 
 use Oilstone\SagePay\Contracts\TransactionType as TypeContract;
 use Oilstone\SagePay\Exceptions\SagePayException;
+use Oilstone\SagePay\Http\Response;
 
 /**
  * Class Refund
@@ -35,7 +36,7 @@ class Refund extends Transaction implements TypeContract
      */
     public function result(): string
     {
-        if ($this->transactionResponse['status'] == 'Ok') {
+        if (in_array(strtolower($this->transactionResponse['status']), Response::$validStatuses)) {
             return 'refunded';
         }
 

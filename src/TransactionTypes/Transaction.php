@@ -95,6 +95,6 @@ abstract class Transaction
      */
     public function reference(): string
     {
-        return $this->transactionDetails['vendorTxCode'];
+        return $this->transactionDetails['vendorTxCode'] ?? '';
     }
 }

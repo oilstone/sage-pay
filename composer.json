@@ -16,7 +16,8 @@
     "php": ">=7.1.0",
     "guzzlehttp/guzzle": "^6.3",
     "illuminate/support": "^5.5",
-    "sabre/xml": "^2.0"
+    "sabre/xml": "^2.0",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {

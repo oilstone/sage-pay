@@ -4,6 +4,7 @@ namespace Oilstone\SagePay\TransactionTypes;
 
 use Oilstone\SagePay\Contracts\TransactionType as TypeContract;
 use Oilstone\SagePay\Exceptions\SagePayException;
+use Oilstone\SagePay\Http\Response;
 
 /**
  * Class Authorisation
@@ -37,11 +38,27 @@ class Authorisation extends Transaction implements TypeContract
     }
 
     /**
+     * @return bool
+     */
+    public function succeeded(): bool
+    {
+        return $this->result() === 'paid';
+    }
+
+    /**
+     * @return string
+     */
+    public function status(): string
+    {
+        return $this->transactionResponse['status'] ?? '';
+    }
+
+    /**
      * @return string
      */
     public function result(): string
     {
-        if ($this->transactionResponse['status'] == 'Authenticated') {
+        if (in_array(strtolower($this->transactionResponse['status']), Response::$validStatuses)) {
             return 'paid';
         }
 

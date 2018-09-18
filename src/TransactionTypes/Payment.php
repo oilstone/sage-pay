@@ -4,6 +4,7 @@ namespace Oilstone\SagePay\TransactionTypes;
 
 use Oilstone\SagePay\Contracts\TransactionType as TypeContract;
 use Oilstone\SagePay\Exceptions\SagePayException;
+use Oilstone\SagePay\Http\Response;
 use Oilstone\SagePay\Registries\CardIdentifier as CardRegistry;
 use Oilstone\SagePay\Registries\Session as SessionRegistry;
 
@@ -119,7 +120,7 @@ class Payment extends Transaction implements TypeContract
             return '3d-secure';
         }
 
-        if ($this->transactionResponse['status'] == 'Ok') {
+        if (in_array(strtolower($this->transactionResponse['status']), Response::$validStatuses)) {
             return 'paid';
         }
 

@@ -2,11 +2,9 @@
 
 namespace Oilstone\SagePay\Http;
 
-use App\Mail\SagePayAlert;
 use Oilstone\SagePay\Exceptions\SagePayException;
 use Exception;
 use Illuminate\Support\Str;
-use Mail;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -15,6 +13,21 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Response
 {
+    /**
+     * @var array
+     */
+    public static $validStatuses = [
+        'ok',
+        'ok repeated',
+        '3dauth',
+        'authenticated',            // 3-D Secure checks carried out and user authenticated correctly.
+        'notchecked',               // 3-D Secure checks were not performed. This indicates that 3-D Secure was either switched off at the account level, or disabled at transaction registration with the apply3DSecure set to Disable.
+        'cardnotenrolled',          // This means that the card is not in the 3-D Secure scheme.
+        'issuernotenrolled',        // This means that the issuer is not part of the 3-D Secure scheme.
+        'attemptonly',              // This means that the cardholder attempted to authenticate themselves but the process did not complete. A liability shift may occur for non-Maestro cards, depending on your merchant agreement.
+        'incomplete',               // This means that the 3D Secure authentication was not available (normally at the card issuer site).
+    ];
+
     /**
      * @param Exception $exception
      * @throws SagePayException
@@ -55,7 +68,7 @@ class Response
     {
         $responseBody = json_decode($response->getBody()->getContents(), true);
 
-        if (isset($responseBody['status']) && !in_array(Str::lower($responseBody['status']), ['ok', 'ok repeated', '3dauth', 'authenticated'])) {
+        if (isset($responseBody['status']) && !in_array(Str::lower($responseBody['status']), static::$validStatuses)) {
             $errorCode = $responseBody['statusCode'];
             $message = $responseBody['statusDetail'];
 
