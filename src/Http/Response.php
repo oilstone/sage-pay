@@ -69,8 +69,8 @@ class Response
         $responseBody = json_decode($response->getBody()->getContents(), true);
 
         if (isset($responseBody['status']) && !in_array(Str::lower($responseBody['status']), static::$validStatuses)) {
-            $errorCode = $responseBody['statusCode'];
-            $message = $responseBody['statusDetail'];
+            $errorCode = intval($responseBody['statusCode'] ?? 1017);
+            $message = $responseBody['statusDetail'] ?? 'The transaction was declined';
 
             throw new SagePayException($errorCode, $message, $response->getStatusCode());
         }
