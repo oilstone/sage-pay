@@ -2,16 +2,17 @@
 
 namespace Oilstone\SagePay;
 
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Oilstone\SagePay\Contracts\TransactionType;
 use Oilstone\SagePay\DataTypes\Transaction;
 use Oilstone\SagePay\Exceptions\SagePayException;
+use Oilstone\SagePay\Http\Response;
 use Oilstone\SagePay\Registries\Config;
 use Oilstone\SagePay\TransactionTypes\Authorisation;
 use Oilstone\SagePay\TransactionTypes\Payment;
 use Oilstone\SagePay\TransactionTypes\Refund;
 use Oilstone\SagePay\TransactionTypes\Repeat;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 
 /**
  * Class SagePay
@@ -108,5 +109,13 @@ class SagePay
     public function batches(Carbon $startDate, Carbon $endDate): Collection
     {
         return (new Reports())->batchList($startDate, $endDate);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function responses(): Collection
+    {
+        return collect(Response::responses());
     }
 }
