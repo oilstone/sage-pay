@@ -29,6 +29,11 @@ class Response
     ];
 
     /**
+     * @var array
+     */
+    protected static $responses = [];
+
+    /**
      * @param Exception $exception
      * @throws SagePayException
      */
@@ -68,6 +73,8 @@ class Response
     {
         $responseBody = json_decode($response->getBody()->getContents(), true);
 
+        static::$responses[] = $responseBody;
+
         if (isset($responseBody['status']) && !in_array(Str::lower($responseBody['status']), static::$validStatuses)) {
             $errorCode = intval($responseBody['statusCode'] ?? 1017);
             $message = $responseBody['statusDetail'] ?? 'The transaction was declined';
@@ -76,5 +83,13 @@ class Response
         }
 
         return $responseBody;
+    }
+
+    /**
+     * @return array
+     */
+    public static function responses(): array
+    {
+        return static::$responses;
     }
 }
