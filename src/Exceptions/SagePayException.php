@@ -3,6 +3,7 @@
 namespace Oilstone\SagePay\Exceptions;
 
 use Exception;
+use Oilstone\Logging\Log;
 use Throwable;
 
 /**
@@ -30,6 +31,8 @@ class SagePayException extends Exception
      */
     public function __construct(int $errorCode, string $message, int $code = 0, Throwable $previous = null)
     {
+        parent::__construct($message, $code, $previous);
+
         $this->errorCode = $errorCode;
 
         $this->message = $message;
@@ -37,6 +40,8 @@ class SagePayException extends Exception
         $this->code = $code;
 
         $this->previous = $previous;
+
+        Log::error('Sage Pay exception', compact('errorCode', 'message', 'code'));
     }
 
     /**

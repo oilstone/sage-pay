@@ -2,9 +2,10 @@
 
 namespace Oilstone\SagePay\Http;
 
-use Oilstone\SagePay\Exceptions\SagePayException;
 use Exception;
 use Illuminate\Support\Str;
+use Oilstone\Logging\Log;
+use Oilstone\SagePay\Exceptions\SagePayException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -81,6 +82,8 @@ class Response
 
             throw new SagePayException($errorCode, $message, $response->getStatusCode());
         }
+
+        Log::debug('Sage Pay response', compact('responseBody'));
 
         return $responseBody;
     }

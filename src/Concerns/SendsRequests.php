@@ -2,12 +2,13 @@
 
 namespace Oilstone\SagePay\Concerns;
 
+use GuzzleHttp\Exception\GuzzleException;
+use Oilstone\Logging\Log;
 use Oilstone\SagePay\Exceptions\SagePayException;
 use Oilstone\SagePay\Http\Client;
 use Oilstone\SagePay\Http\Response;
 use Oilstone\SagePay\Registries\Authorization;
 use Oilstone\SagePay\Registries\Config;
-use GuzzleHttp\Exception\GuzzleException;
 use RuntimeException;
 
 /**
@@ -43,10 +44,14 @@ trait SendsRequests
         $response = null;
 
         try {
+            $logId = $this->logRequestStart($endPoint, $data, $this->headers($headers));
+
             $response = $client->request('POST', Config::get('api_url') . $endPoint, array_filter([
                 'headers' => $this->headers($headers),
                 'json' => $data,
             ]));
+
+            $this->logRequestFinish($logId);
         } catch (RuntimeException $e) {
             Response::exception($e);
         } catch (GuzzleException $e) {
@@ -54,6 +59,29 @@ trait SendsRequests
         }
 
         return Response::parse($response);
+    }
+
+    /**
+     * @param string $endpoint
+     * @param array $json
+     * @param array $headers
+     * @return string
+     */
+    protected function logRequestStart(string $endpoint, array $json, array $headers): string
+    {
+        $id = uniqid();
+
+        if (isset($json['cardDetails'])) {
+            $json['cardDetails'] = 'redacted';
+        }
+
+        if (isset($json['paymentMethod']['card'])) {
+            $json['paymentMethod']['card'] = 'redacted';
+        }
+
+        Log::debug('Sage Pay request ' . $id . ': start' . $endpoint, compact('endpoint', 'json', 'headers'));
+
+        return $id;
     }
 
     /**
@@ -67,6 +95,14 @@ trait SendsRequests
             'content-type' => 'application/json',
             'authorization' => Authorization::get('header'),
         ]), $params);
+    }
+
+    /**
+     * @param string $id
+     */
+    protected function logRequestFinish(string $id)
+    {
+        Log::debug('Sage Pay request ' . $id . ': finish');
     }
 
     /**
