@@ -13,6 +13,11 @@ use Throwable;
 class SagePayException extends Exception
 {
     /**
+     * @var string
+     */
+    protected static $logId;
+
+    /**
      * @var int
      */
     protected $errorCode;
@@ -41,7 +46,15 @@ class SagePayException extends Exception
 
         $this->previous = $previous;
 
-        Log::error('Sage Pay exception', compact('errorCode', 'message', 'code'));
+        Log::error(static::$logId . ' - Sage Pay exception', compact('errorCode', 'message', 'code'));
+    }
+
+    /**
+     * @param string $logId
+     */
+    public static function setLogId(string $logId)
+    {
+        static::$logId = $logId;
     }
 
     /**

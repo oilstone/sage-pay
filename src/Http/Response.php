@@ -35,6 +35,11 @@ class Response
     protected static $responses = [];
 
     /**
+     * @var string
+     */
+    protected static $logId;
+
+    /**
      * @param Exception $exception
      * @throws SagePayException
      */
@@ -83,7 +88,7 @@ class Response
             throw new SagePayException($errorCode, $message, $response->getStatusCode());
         }
 
-        Log::debug('Sage Pay response', compact('responseBody'));
+        Log::debug(static::$logId . ' - Sage Pay response', compact('responseBody'));
 
         return $responseBody;
     }
@@ -94,5 +99,13 @@ class Response
     public static function responses(): array
     {
         return static::$responses;
+    }
+
+    /**
+     * @param string $logId
+     */
+    public static function setLogId(string $logId)
+    {
+        static::$logId = $logId;
     }
 }
