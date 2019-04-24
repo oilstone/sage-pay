@@ -20,6 +20,11 @@ trait SendsRequests
     use SetsAuthorizationHeaders;
 
     /**
+     * @var string
+     */
+    protected static $logId;
+
+    /**
      * @param string $endPoint
      * @param array $data
      * @param array $headers
@@ -44,14 +49,16 @@ trait SendsRequests
         $response = null;
 
         try {
-            $logId = $this->logRequestStart($endPoint, $data, $this->headers($headers));
+            static::generateLogId();
+
+            $this->logRequestStart($endPoint, $data, $this->headers($headers));
 
             $response = $client->request('POST', Config::get('api_url') . $endPoint, array_filter([
                 'headers' => $this->headers($headers),
                 'json' => $data,
             ]));
 
-            $this->logRequestFinish($logId);
+            $this->logRequestFinish();
         } catch (RuntimeException $e) {
             Response::exception($e);
         } catch (GuzzleException $e) {
@@ -62,15 +69,25 @@ trait SendsRequests
     }
 
     /**
+     * @return void
+     */
+    public static function generateLogId()
+    {
+        if (!static::$logId) {
+            static::$logId = uniqid();
+        }
+
+        SagePayException::setLogId(static::$logId);
+        Response::setLogId(static::$logId);
+    }
+
+    /**
      * @param string $endpoint
      * @param array $json
      * @param array $headers
-     * @return string
      */
-    protected function logRequestStart(string $endpoint, array $json, array $headers): string
+    protected function logRequestStart(string $endpoint, array $json, array $headers)
     {
-        $id = uniqid();
-
         if (isset($json['cardDetails'])) {
             $json['cardDetails'] = 'redacted';
         }
@@ -79,9 +96,7 @@ trait SendsRequests
             $json['paymentMethod']['card'] = 'redacted';
         }
 
-        Log::debug('Sage Pay request ' . $id . ': start' . $endpoint, compact('endpoint', 'json', 'headers'));
-
-        return $id;
+        Log::debug(static::$logId . ' - Sage Pay request start', compact('endpoint', 'json', 'headers'));
     }
 
     /**
@@ -98,11 +113,11 @@ trait SendsRequests
     }
 
     /**
-     * @param string $id
+     * @return void
      */
-    protected function logRequestFinish(string $id)
+    protected function logRequestFinish()
     {
-        Log::debug('Sage Pay request ' . $id . ': finish');
+        Log::debug(static::$logId . ' - Sage Pay request finish');
     }
 
     /**
