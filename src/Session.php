@@ -15,6 +15,9 @@ class Session
 {
     use SendsRequests;
 
+    /**
+     * @throws Exceptions\SagePayException
+     */
     public function create()
     {
         if (!SessionRegistry::get('expiry') || Carbon::parse(SessionRegistry::get('expiry'))->isPast()) {

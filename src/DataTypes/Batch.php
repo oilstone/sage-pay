@@ -7,6 +7,8 @@ use Illuminate\Support\Carbon;
 
 /**
  * Class Transaction
+ * @property string|null batchid
+ * @property bool|null completed
  * @package Oilstone\SagePay\DataTypes
  */
 class Batch extends DataType implements TypeContract

@@ -3,6 +3,7 @@
 namespace Oilstone\SagePay\Concerns;
 
 use Oilstone\SagePay\Auth;
+use Oilstone\SagePay\Exceptions\SagePayException;
 use Oilstone\SagePay\Registries\Config;
 
 trait SetsAuthorizationHeaders
@@ -21,6 +22,7 @@ trait SetsAuthorizationHeaders
 
     /**
      * @return $this
+     * @throws SagePayException
      */
     public function withTokenAuth()
     {

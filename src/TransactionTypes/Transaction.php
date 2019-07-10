@@ -5,6 +5,7 @@ namespace Oilstone\SagePay\TransactionTypes;
 use Oilstone\SagePay\Concerns\CreatesCards;
 use Oilstone\SagePay\Concerns\SendsRequests;
 use ReflectionClass;
+use ReflectionException;
 
 /**
  * Class Transaction
@@ -83,7 +84,7 @@ abstract class Transaction
 
     /**
      * @return string
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function type(): string
     {

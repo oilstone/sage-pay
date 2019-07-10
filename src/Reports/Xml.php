@@ -2,8 +2,11 @@
 
 namespace Oilstone\SagePay\Reports;
 
+use Oilstone\SagePay\Exceptions\SagePayReportsException;
 use Sabre\Xml\Element\Cdata as CData;
+use Sabre\Xml\ParseException;
 use Sabre\Xml\Service as SabreService;
+use Sabre\Xml\XmlSerializable;
 
 /**
  * Class Xml
@@ -21,6 +24,7 @@ class Xml extends SabreService
      *
      * @param array $array
      * @return mixed
+     * @throws SagePayReportsException
      */
     public function toFragment(array $array)
     {
@@ -33,7 +37,7 @@ class Xml extends SabreService
      * Override the Sabre XML Service write method to disable the auto indent
      *
      * @param string $rootElementName
-     * @param array|\Sabre\Xml\XmlSerializable|string $value
+     * @param array|XmlSerializable|string $value
      * @param string $contextUri
      * @return string
      */
@@ -74,6 +78,7 @@ class Xml extends SabreService
      * @param $xml
      * @param $node
      * @return mixed
+     * @throws SagePayReportsException
      */
     public function getFragment($xml, $node)
     {
@@ -83,7 +88,11 @@ class Xml extends SabreService
             $node => 'Sabre\Xml\Element\XmlFragment',
         ];
 
-        $fragment = $this->parse($xml)->getXml();
+        try {
+            $fragment = $this->parse($xml)->getXml();
+        } catch (ParseException $e) {
+            throw new SagePayReportsException('Unable to parse report XML');
+        }
 
         $this->elementMap = $current_map;
 
@@ -96,12 +105,17 @@ class Xml extends SabreService
      * @param $xml
      * @param array $element_map
      * @return array
+     * @throws SagePayReportsException
      */
     public function toArray($xml, array $element_map = [])
     {
         $this->elementMap = $element_map;
 
-        return $this->stripNameSpace($this->parse($xml));
+        try {
+            return $this->stripNameSpace($this->parse($xml));
+        } catch (ParseException $e) {
+            throw new SagePayReportsException('Unable to parse report XML');
+        }
     }
 
     /**

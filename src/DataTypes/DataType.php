@@ -132,4 +132,12 @@ abstract class DataType implements ArrayAccess, Iterator, Countable
     {
         return $this->data[$name] ?? null;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->data;
+    }
 }

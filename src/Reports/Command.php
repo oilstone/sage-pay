@@ -3,6 +3,7 @@
 namespace Oilstone\SagePay\Reports;
 
 use Oilstone\SagePay\Exceptions\SagePayException;
+use Oilstone\SagePay\Exceptions\SagePayReportsException;
 use Oilstone\SagePay\Http\Client;
 use Oilstone\SagePay\Registries\Config;
 use Sabre\Xml\Reader;
@@ -53,6 +54,7 @@ class Command
      * Command constructor.
      * @param string $command
      * @param array $additionalFields
+     * @throws SagePayReportsException
      */
     public function __construct(string $command, array $additionalFields = [])
     {
@@ -75,6 +77,7 @@ class Command
 
     /**
      * @return Command
+     * @throws SagePayReportsException
      */
     public function make(): Command
     {
@@ -96,6 +99,7 @@ class Command
     /**
      * @return array
      * @throws SagePayException
+     * @throws SagePayReportsException
      */
     public function send(): array
     {

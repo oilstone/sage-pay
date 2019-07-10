@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpUndefinedFunctionInspection */
+
 namespace Oilstone\SagePay\Integrations\Laravel;
 
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
