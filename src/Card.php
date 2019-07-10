@@ -14,6 +14,10 @@ class Card
 {
     use SendsRequests;
 
+    /**
+     * @param array $cardDetails
+     * @throws Exceptions\SagePayException
+     */
     public function create(array $cardDetails)
     {
         if (!CardIdentifier::get('expiry') || Carbon::parse(CardIdentifier::get('expiry'))->isPast()) {

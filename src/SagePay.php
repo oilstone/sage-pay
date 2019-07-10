@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Oilstone\SagePay\Contracts\TransactionType;
 use Oilstone\SagePay\DataTypes\Transaction;
 use Oilstone\SagePay\Exceptions\SagePayException;
+use Oilstone\SagePay\Exceptions\SagePayReportsException;
 use Oilstone\SagePay\Http\Response;
 use Oilstone\SagePay\Registries\Config;
 use Oilstone\SagePay\TransactionTypes\Authorisation;
@@ -73,6 +74,7 @@ class SagePay
      * @param $transactionId
      * @return Transaction
      * @throws SagePayException
+     * @throws SagePayReportsException
      */
     public function transaction($transactionId): Transaction
     {
@@ -84,6 +86,7 @@ class SagePay
      * @param Carbon $endDate
      * @return Collection
      * @throws SagePayException
+     * @throws SagePayReportsException
      */
     public function transactions(Carbon $startDate, Carbon $endDate): Collection
     {
@@ -105,6 +108,7 @@ class SagePay
      * @param Carbon $endDate
      * @return Collection
      * @throws SagePayException
+     * @throws SagePayReportsException
      */
     public function batches(Carbon $startDate, Carbon $endDate): Collection
     {

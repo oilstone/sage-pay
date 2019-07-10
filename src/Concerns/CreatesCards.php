@@ -3,6 +3,7 @@
 namespace Oilstone\SagePay\Concerns;
 
 use Oilstone\SagePay\Card;
+use Oilstone\SagePay\Exceptions\SagePayException;
 
 /**
  * Trait CreatesCards
@@ -13,6 +14,7 @@ trait CreatesCards
     /**
      * @param array $cardDetails
      * @return $this
+     * @throws SagePayException
      */
     public function card(array $cardDetails)
     {

@@ -25,6 +25,7 @@ class Auth
 
     /**
      *
+     * @throws Exceptions\SagePayException
      */
     public function tokenAuthorizationHeader()
     {

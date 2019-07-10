@@ -80,4 +80,9 @@ interface DataType
      * @return mixed|null
      */
     public function __get($name);
+
+    /**
+     * @return array
+     */
+    public function toArray(): array;
 }

@@ -19,6 +19,7 @@ class Reports extends Service
      * @param $transactionId
      * @return Transaction
      * @throws Exceptions\SagePayException
+     * @throws Exceptions\SagePayReportsException
      */
     public function transactionDetail($transactionId): Transaction
     {
@@ -34,6 +35,7 @@ class Reports extends Service
      * @param Carbon $endDate
      * @return Collection
      * @throws Exceptions\SagePayException
+     * @throws Exceptions\SagePayReportsException
      */
     public function transactionList(Carbon $startDate, Carbon $endDate): Collection
     {
@@ -54,6 +56,7 @@ class Reports extends Service
      * @param Carbon $endDate
      * @return Collection
      * @throws Exceptions\SagePayException
+     * @throws Exceptions\SagePayReportsException
      */
     public function batchList(Carbon $startDate, Carbon $endDate): Collection
     {
@@ -72,6 +75,7 @@ class Reports extends Service
     /**
      * @return string
      * @throws Exceptions\SagePayException
+     * @throws Exceptions\SagePayReportsException
      */
     public function version(): string
     {
