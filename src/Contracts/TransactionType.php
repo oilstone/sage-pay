@@ -26,11 +26,6 @@ interface TransactionType
     /**
      * @return string
      */
-    public function status(): string;
-
-    /**
-     * @return string
-     */
     public function id(): string;
 
     /**
@@ -44,17 +39,7 @@ interface TransactionType
     public function result(): string;
 
     /**
-     * @return float
-     */
-    public function amount(): float;
-
-    /**
      * @return string
      */
     public function type(): string;
-
-    /**
-     * @return string
-     */
-    public function reference(): string;
 }

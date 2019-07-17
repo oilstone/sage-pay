@@ -43,7 +43,6 @@ class SagePay
     /**
      * @param array $transactionDetails
      * @return TransactionType
-     * @throws SagePayException
      */
     public function payment(array $transactionDetails): TransactionType
     {

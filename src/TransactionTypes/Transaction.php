@@ -2,8 +2,7 @@
 
 namespace Oilstone\SagePay\TransactionTypes;
 
-use Oilstone\SagePay\Concerns\CreatesCards;
-use Oilstone\SagePay\Concerns\SendsRequests;
+use Omnipay\Common\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -13,15 +12,13 @@ use ReflectionException;
  */
 abstract class Transaction
 {
-    use SendsRequests, CreatesCards;
-
     /**
      * @var array
      */
     protected $transactionDetails;
 
     /**
-     * @var array
+     * @var ResponseInterface
      */
     protected $transactionResponse;
 
@@ -35,9 +32,9 @@ abstract class Transaction
     }
 
     /**
-     * @return array
+     * @return ResponseInterface
      */
-    public function response(): array
+    public function response(): ResponseInterface
     {
         return $this->transactionResponse;
     }
@@ -55,15 +52,7 @@ abstract class Transaction
      */
     public function succeeded(): bool
     {
-        return ($this->transactionResponse['statusCode'] ?? '') === '0000';
-    }
-
-    /**
-     * @return string
-     */
-    public function status(): string
-    {
-        return $this->transactionResponse['statusDetail'] ?? '';
+        return $this->transactionResponse->isSuccessful();
     }
 
     /**
@@ -71,15 +60,7 @@ abstract class Transaction
      */
     public function id(): string
     {
-        return $this->transactionResponse['transactionId'] ?? '';
-    }
-
-    /**
-     * @return float
-     */
-    public function amount(): float
-    {
-        return round($this->transactionResponse['amount']['totalAmount'], 2) ?? 0;
+        return $this->transactionResponse->getTransactionReference();
     }
 
     /**
@@ -89,13 +70,5 @@ abstract class Transaction
     public function type(): string
     {
         return strtolower((new ReflectionClass($this))->getShortName());
-    }
-
-    /**
-     * @return string
-     */
-    public function reference(): string
-    {
-        return $this->transactionDetails['vendorTxCode'] ?? '';
     }
 }
