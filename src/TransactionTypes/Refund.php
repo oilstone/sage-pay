@@ -3,8 +3,7 @@
 namespace Oilstone\SagePay\TransactionTypes;
 
 use Oilstone\SagePay\Contracts\TransactionType as TypeContract;
-use Oilstone\SagePay\Exceptions\SagePayException;
-use Oilstone\SagePay\Http\Response;
+use Oilstone\SagePay\Gateway;
 
 /**
  * Class Refund
@@ -13,20 +12,29 @@ use Oilstone\SagePay\Http\Response;
 class Refund extends Transaction implements TypeContract
 {
     /**
+     * @param array $transactionDetails
      * @return TypeContract
-     * @throws SagePayException
      */
-    public function send(): TypeContract
+    public function send(array $transactionDetails = []): TypeContract
     {
-        $transaction = [
-            'transactionType' => 'Refund',
-            'referenceTransactionId' => $this->transactionDetails['referenceTransactionId'],
-            'vendorTxCode' => $this->transactionDetails['vendorTxCode'],
-            'amount' => (number_format($this->transactionDetails['amount'],0,'','')*1),
-            'description' => $this->transactionDetails['description'],
-        ];
+        $transactionDetails = array_merge($this->transactionDetails, $transactionDetails);
 
-        $this->transactionResponse = $this->sendBasicAuthRequest('/transactions', $transaction);
+        $gateway = Gateway::make($transactionDetails);
+
+        $transaction = $gateway->refund([
+            'transactionReference' => json_encode([
+                'VPSTxId' => $transactionDetails['referenceVPSTxId'],
+                'VendorTxCode' => $transactionDetails['referenceVendorTxCode'],
+                'SecurityKey' => $transactionDetails['referenceSecurityKey'],
+                'TxAuthNo' => $transactionDetails['referenceTxAuthNo'],
+            ]),
+            'transactionId' => $transactionDetails['vendorTxCode'],
+            'amount' => $transactionDetails['amount'],
+            'description' => $transactionDetails['description'],
+            'currency' => $transactionDetails['currency'] ?? 'GBP',
+        ]);
+
+        $this->transactionResponse = $transaction->send();
 
         return $this;
     }
@@ -36,7 +44,7 @@ class Refund extends Transaction implements TypeContract
      */
     public function result(): string
     {
-        if (in_array(strtolower($this->transactionResponse['status']), Response::$validStatuses)) {
+        if ($this->transactionResponse->isSuccessful()) {
             return 'refunded';
         }
 
@@ -48,6 +56,6 @@ class Refund extends Transaction implements TypeContract
      */
     public function amount(): float
     {
-        return round($this->transactionResponse['amount']['totalAmount'], 2) * -1 ?? 0;
+        return parent::amount() * -1;
     }
 }

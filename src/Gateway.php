@@ -16,12 +16,16 @@ class Gateway
      * @param array $transactionDetails
      * @return GatewayInterface
      */
-    public static function make(array $transactionDetails): GatewayInterface
+    public static function make(array $transactionDetails = []): GatewayInterface
     {
-        return OmniPay::create('SagePay\Direct')->initialize([
+        $testMode = (Config::get('environment') ?? Config::get('api_environment') ?? Config::get('reporting_environment')) === 'TEST';
+
+        $gateway = OmniPay::create('SagePay\Direct', HttpClient::make(!$testMode))->initialize([
             'vendor' => Config::get('vendor_name'),
-            'testMode' => (Config::get('environment') ?? Config::get('api_environment') ?? Config::get('reporting_environment')) === 'TEST',
+            'testMode' => $testMode,
             'apply3DSecure' => $transactionDetails['apply3DSecure'] ?? true,
         ]);
+
+        return $gateway;
     }
 }

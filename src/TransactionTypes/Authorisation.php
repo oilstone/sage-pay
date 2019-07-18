@@ -2,9 +2,9 @@
 
 namespace Oilstone\SagePay\TransactionTypes;
 
+use BadMethodCallException;
 use Oilstone\SagePay\Contracts\TransactionType as TypeContract;
-use Oilstone\SagePay\Exceptions\SagePayException;
-use Oilstone\SagePay\Http\Response;
+use Oilstone\SagePay\Gateway;
 
 /**
  * Class Authorisation
@@ -13,44 +13,23 @@ use Oilstone\SagePay\Http\Response;
 class Authorisation extends Transaction implements TypeContract
 {
     /**
-     * @var string
-     */
-    protected $transactionId;
-
-    /**
      * @param array $transactionDetails
      * @return TypeContract
-     * @throws SagePayException
      */
     public function send(array $transactionDetails = []): TypeContract
     {
-        $this->transactionDetails = array_merge($this->transactionDetails, $transactionDetails);
+        $transactionDetails = array_merge($this->transactionDetails, $transactionDetails);
 
-        $this->transactionId = $this->transactionDetails['m_d'];
+        $gateway = Gateway::make();
 
-        $transaction = [
-            'paRes' => $this->transactionDetails['pa_res'],
-        ];
+        $transaction = $gateway->completeAuthorize([
+            'md' => $transactionDetails['m_d'],
+            'paRes' => $transactionDetails['pa_res'],
+        ]);
 
-        $this->transactionResponse = $this->sendBasicAuthRequest("/transactions/{$this->transactionId}/3d-secure", $transaction);
+        $this->transactionResponse = $transaction->send();
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function succeeded(): bool
-    {
-        return $this->result() === 'paid';
-    }
-
-    /**
-     * @return string
-     */
-    public function status(): string
-    {
-        return $this->transactionResponse['status'] ?? '';
     }
 
     /**
@@ -58,7 +37,7 @@ class Authorisation extends Transaction implements TypeContract
      */
     public function result(): string
     {
-        if (in_array(strtolower($this->transactionResponse['status']), Response::$validStatuses)) {
+        if ($this->transactionResponse->isSuccessful()) {
             return 'paid';
         }
 
@@ -66,10 +45,10 @@ class Authorisation extends Transaction implements TypeContract
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function id(): string
+    public function amount(): float
     {
-        return $this->transactionId ?? '';
+        throw new BadMethodCallException('Authorisation transactions do not provide a transaction amount');
     }
 }

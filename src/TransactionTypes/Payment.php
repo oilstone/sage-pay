@@ -24,13 +24,14 @@ class Payment extends Transaction implements TypeContract
         $card = Card::make($transactionDetails);
 
         $transaction = $gateway->purchase([
-            'amount' => ($transactionDetails['amount'] * 1),
+            'amount' => ($transactionDetails['amount'] * 1) / 100, // Correct for number conversion of omnipay sagepay implementation
             'currency' => 'GBP',
             'card' => $card,
             'transactionId' => $transactionDetails['vendorTxCode'],
             'description' => $transactionDetails['description'],
-            'returnUrl' => $transactionDetails['authorisationCompleteUrl'],
         ]);
+
+        var_dump($transactionDetails['vendorTxCode']);
 
         $this->transactionResponse = $transaction->send();
 

@@ -8,7 +8,6 @@ use Oilstone\SagePay\Contracts\TransactionType;
 use Oilstone\SagePay\DataTypes\Transaction;
 use Oilstone\SagePay\Exceptions\SagePayException;
 use Oilstone\SagePay\Exceptions\SagePayReportsException;
-use Oilstone\SagePay\Http\Response;
 use Oilstone\SagePay\Registries\Config;
 use Oilstone\SagePay\TransactionTypes\Authorisation;
 use Oilstone\SagePay\TransactionTypes\Payment;
@@ -52,7 +51,6 @@ class SagePay
     /**
      * @param array $transactionDetails
      * @return TransactionType
-     * @throws SagePayException
      */
     public function refund(array $transactionDetails): TransactionType
     {
@@ -62,7 +60,6 @@ class SagePay
     /**
      * @param array $transactionDetails
      * @return TransactionType
-     * @throws SagePayException
      */
     public function repeat(array $transactionDetails): TransactionType
     {
@@ -95,7 +92,6 @@ class SagePay
     /**
      * @param array $authorisationDetails
      * @return TransactionType
-     * @throws SagePayException
      */
     public function authorisation(array $authorisationDetails): TransactionType
     {
@@ -112,13 +108,5 @@ class SagePay
     public function batches(Carbon $startDate, Carbon $endDate): Collection
     {
         return (new Reports())->batchList($startDate, $endDate);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function responses(): Collection
-    {
-        return collect(Response::responses());
     }
 }
