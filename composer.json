@@ -18,7 +18,9 @@
     "illuminate/support": "^5.5",
     "sabre/xml": "^2.0",
     "ext-json": "*",
-    "oilstone/logging": "^1.0"
+    "oilstone/logging": "^1.0",
+    "league/omnipay": "^3",
+    "omnipay/sagepay": "^3.2"
   },
   "autoload": {
     "psr-4": {

@@ -2,8 +2,8 @@
 
 namespace Oilstone\SagePay\TransactionTypes;
 
-use Oilstone\SagePay\Concerns\CreatesCards;
-use Oilstone\SagePay\Concerns\SendsRequests;
+use BadMethodCallException;
+use Omnipay\Common\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -13,15 +13,13 @@ use ReflectionException;
  */
 abstract class Transaction
 {
-    use SendsRequests, CreatesCards;
-
     /**
      * @var array
      */
     protected $transactionDetails;
 
     /**
-     * @var array
+     * @var ResponseInterface
      */
     protected $transactionResponse;
 
@@ -39,7 +37,7 @@ abstract class Transaction
      */
     public function response(): array
     {
-        return $this->transactionResponse;
+        return $this->transactionResponse->getData();
     }
 
     /**
@@ -55,15 +53,7 @@ abstract class Transaction
      */
     public function succeeded(): bool
     {
-        return ($this->transactionResponse['statusCode'] ?? '') === '0000';
-    }
-
-    /**
-     * @return string
-     */
-    public function status(): string
-    {
-        return $this->transactionResponse['statusDetail'] ?? '';
+        return $this->transactionResponse->isSuccessful();
     }
 
     /**
@@ -71,15 +61,13 @@ abstract class Transaction
      */
     public function id(): string
     {
-        return $this->transactionResponse['transactionId'] ?? '';
-    }
+        $referenceData = $this->transactionResponse->getTransactionReference();
 
-    /**
-     * @return float
-     */
-    public function amount(): float
-    {
-        return round($this->transactionResponse['amount']['totalAmount'], 2) ?? 0;
+        if (!isset($referenceData)) {
+            throw new BadMethodCallException('No valid reference data found. Check the transaction for additional steps such as a redirect request.');
+        }
+
+        return str_replace(['{', '}'], '', json_decode($referenceData, true)['VPSTxId'] ?? '');
     }
 
     /**
@@ -94,8 +82,34 @@ abstract class Transaction
     /**
      * @return string
      */
+    public function status(): string
+    {
+        return $this->transactionResponse->getData()['Status'];
+    }
+
+    /**
+     * @return float
+     */
+    public function amount(): float
+    {
+        return round(intval($this->transactionResponse->getRequest()->getParameters()['amount']) / 100, 2);
+    }
+
+    /**
+     * @return string
+     */
     public function reference(): string
     {
-        return $this->transactionDetails['vendorTxCode'] ?? '';
+        return json_decode($this->transactionResponse->getTransactionReference(), true)['VendorTxCode'];
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        return $this->transactionResponse->{$name}(...$arguments);
     }
 }
