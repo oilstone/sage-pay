@@ -31,8 +31,6 @@ class Payment extends Transaction implements TypeContract
             'description' => $transactionDetails['description'],
         ]);
 
-        var_dump($transactionDetails['vendorTxCode']);
-
         $this->transactionResponse = $transaction->send();
 
         return $this;
