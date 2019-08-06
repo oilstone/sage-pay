@@ -18,7 +18,7 @@ class Gateway
      */
     public static function make(array $transactionDetails = []): GatewayInterface
     {
-        $testMode = (Config::get('environment') ?? Config::get('api_environment') ?? Config::get('reporting_environment')) === 'TEST';
+        $testMode = Config::get('environment') === 'TEST';
 
         $gateway = OmniPay::create('SagePay\Direct', HttpClient::make(!$testMode))->initialize([
             'vendor' => Config::get('vendor_name'),
