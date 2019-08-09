@@ -20,8 +20,6 @@ return [
 
     'environment' => env('SAGEPAY_ENV', 'LIVE'),
 
-    'cart-description' => env('SAGEPAY_CART_DESCRIPTION', 'Secure payment'),
-
 
     /*
      * Sage Pay Reporting & Admin API
