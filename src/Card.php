@@ -3,6 +3,7 @@
 namespace Oilstone\SagePay;
 
 use Omnipay\Common\CreditCard;
+use Omnipay\SagePay\PayPal;
 
 /**
  * Class Card
@@ -16,16 +17,7 @@ class Card
      */
     public static function make(array $cardDetails): CreditCard
     {
-        $expiry = str_split($cardDetails['expiryDate'] ?? '', 2);
-        $start = str_split($cardDetails['startDate'] ?? '', 2);
-
-        return new CreditCard(array_merge($cardDetails, array_filter([
-            'number' => $cardDetails['number'] ?? $cardDetails['cardNumber'] ?? null,
-            'expiryMonth' => $cardDetails['expiryMonth'] ?? $expiry[0] ?? null,
-            'expiryYear' => $cardDetails['expiryYear'] ?? $expiry[1] ?? null,
-            'startMonth' => $cardDetails['startMonth'] ?? $start[0] ?? null,
-            'startYear' => $cardDetails['startYear'] ?? $start[1] ?? null,
-            'cvv' => $cardDetails['cvv'] ?? $cardDetails['securityCode'] ?? null,
+        $data = array_filter([
             'billingTitle' => $cardDetails['billingTitle'] ?? $cardDetails['customerTitle'] ?? null,
             'billingFirstName' => $cardDetails['billingFirstName'] ?? $cardDetails['customerFirstName'] ?? null,
             'billingLastName' => $cardDetails['billingLastName'] ?? $cardDetails['customerLastName'] ?? null,
@@ -45,6 +37,24 @@ class Card
             'shippingState' => $cardDetails['shippingState'] ?? $cardDetails['billingState'] ?? $cardDetails['state'] ?? null,
             'shippingCountry' => $cardDetails['shippingCountry'] ?? $cardDetails['billingCountry'] ?? $cardDetails['country'] ?? null,
             'email' => $cardDetails['email'] ?? $cardDetails['customerEmail'] ?? null,
+        ]);
+
+        if (($cardDetails['type'] ?? false) === 'paypal') {
+            return new PayPal(array_merge($data, array_filter([
+                'callbackUrl' => $cardDetails['callbackUrl'] ?? null,
+            ])));
+        }
+
+        $expiry = str_split($cardDetails['expiryDate'] ?? '', 2);
+        $start = str_split($cardDetails['startDate'] ?? '', 2);
+
+        return new CreditCard(array_merge($data, array_filter([
+            'number' => $cardDetails['number'] ?? $cardDetails['cardNumber'] ?? null,
+            'expiryMonth' => $cardDetails['expiryMonth'] ?? $expiry[0] ?? null,
+            'expiryYear' => $cardDetails['expiryYear'] ?? $expiry[1] ?? null,
+            'startMonth' => $cardDetails['startMonth'] ?? $start[0] ?? null,
+            'startYear' => $cardDetails['startYear'] ?? $start[1] ?? null,
+            'cvv' => $cardDetails['cvv'] ?? $cardDetails['securityCode'] ?? null,
         ])));
     }
 }

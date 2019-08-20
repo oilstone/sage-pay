@@ -2,15 +2,15 @@
 
 namespace Oilstone\SagePay\TransactionTypes;
 
-use Oilstone\SagePay\Card;
+use BadMethodCallException;
 use Oilstone\SagePay\Contracts\TransactionType as TypeContract;
 use Oilstone\SagePay\Gateway;
 
 /**
- * Class Payment
+ * Class PayPalAuthorisation
  * @package Oilstone\SagePay\TransactionTypes
  */
-class Payment extends Transaction implements TypeContract
+class PayPalAuthorisation extends Transaction implements TypeContract
 {
     /**
      * @param array $transactionDetails
@@ -20,15 +20,12 @@ class Payment extends Transaction implements TypeContract
     {
         $transactionDetails = array_merge($this->transactionDetails, $transactionDetails);
 
-        $gateway = Gateway::make($transactionDetails);
-        $card = Card::make($transactionDetails);
+        $gateway = Gateway::make();
 
-        $transaction = $gateway->purchase([
-            'amount' => ($transactionDetails['amount'] * 1) / 100, // Correct for number conversion of omnipay sagepay implementation
-            'currency' => 'GBP',
-            'card' => $card,
-            'transactionId' => $transactionDetails['vendorTxCode'],
-            'description' => $transactionDetails['description'],
+        $transaction = $gateway->completePayPal([
+            'amount' => $transactionDetails['amount'],
+            'transactionId' => $transactionDetails['transactionId'],
+            'accept' => $transactionDetails['accept'],
         ]);
 
         $this->transactionResponse = $transaction->send();
@@ -45,10 +42,14 @@ class Payment extends Transaction implements TypeContract
             return 'paid';
         }
 
-        if ($this->transactionResponse->isRedirect()) {
-            return 'redirect';
-        }
-
         return '';
+    }
+
+    /**
+     * @return float
+     */
+    public function amount(): float
+    {
+        throw new BadMethodCallException('Authorisation transactions do not provide a transaction amount');
     }
 }

@@ -11,6 +11,7 @@ use Oilstone\SagePay\Exceptions\SagePayReportsException;
 use Oilstone\SagePay\Registries\Config;
 use Oilstone\SagePay\TransactionTypes\Authorisation;
 use Oilstone\SagePay\TransactionTypes\Payment;
+use Oilstone\SagePay\TransactionTypes\PayPalAuthorisation;
 use Oilstone\SagePay\TransactionTypes\Refund;
 use Oilstone\SagePay\TransactionTypes\Repeat;
 
@@ -96,6 +97,15 @@ class SagePay
     public function authorisation(array $authorisationDetails): TransactionType
     {
         return (new Authorisation($authorisationDetails))->send();
+    }
+
+    /**
+     * @param array $authorisationDetails
+     * @return TransactionType
+     */
+    public function payPalAuthorisation(array $authorisationDetails): TransactionType
+    {
+        return (new PayPalAuthorisation($authorisationDetails))->send();
     }
 
     /**
