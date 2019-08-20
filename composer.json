@@ -20,7 +20,7 @@
     "ext-json": "*",
     "oilstone/logging": "^1.0",
     "league/omnipay": "^3",
-    "omnipay/sagepay": "^3.2"
+    "omnipay/sagepay": "dev-develop"
   },
   "autoload": {
     "psr-4": {
@@ -33,5 +33,11 @@
         "Oilstone\\SagePay\\Integrations\\Laravel\\ServiceProvider"
       ]
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url":  "git@github.com:oilstone/omnipay-sagepay.git"
+    }
+  ]
 }
