@@ -18,23 +18,12 @@ return [
 
     'vendor_name' => env('SAGEPAY_VENDOR'),
 
-    /*
-     * Sage Pay REST API
-     */
+    'environment' => env('SAGEPAY_ENV', 'LIVE'),
 
-    'api_key' => env('SAGEPAY_API_KEY'),
-
-    'api_password' => env('SAGEPAY_API_PASSWORD'),
-
-    'api_url' => env('SAGEPAY_API_URL', 'https://pi-live.sagepay.com/api/v1'),
-
-    'api_environment' => env('SAGEPAY_ENV', 'LIVE'),
 
     /*
      * Sage Pay Reporting & Admin API
      */
-
-    'reporting_environment' => env('SAGEPAY_ENV', 'LIVE'),
 
     'reporting_url' => env('SAGEPAY_WEB_URL', 'https://live.sagepay.com/access/access.htm'),
 

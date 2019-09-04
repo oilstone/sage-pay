@@ -2,14 +2,15 @@
 
 namespace Oilstone\SagePay\TransactionTypes;
 
+use BadMethodCallException;
 use Oilstone\SagePay\Contracts\TransactionType as TypeContract;
 use Oilstone\SagePay\Gateway;
 
 /**
- * Class Refund
+ * Class PayPalAuthorisation
  * @package Oilstone\SagePay\TransactionTypes
  */
-class Refund extends Transaction implements TypeContract
+class PayPalAuthorisation extends Transaction implements TypeContract
 {
     /**
      * @param array $transactionDetails
@@ -19,19 +20,12 @@ class Refund extends Transaction implements TypeContract
     {
         $transactionDetails = array_merge($this->transactionDetails, $transactionDetails);
 
-        $gateway = Gateway::make($transactionDetails);
+        $gateway = Gateway::make();
 
-        $transaction = $gateway->refund([
-            'transactionReference' => json_encode([
-                'VPSTxId' => $transactionDetails['referenceVPSTxId'],
-                'VendorTxCode' => $transactionDetails['referenceVendorTxCode'],
-                'SecurityKey' => $transactionDetails['referenceSecurityKey'],
-                'TxAuthNo' => $transactionDetails['referenceTxAuthNo'],
-            ]),
-            'transactionId' => $transactionDetails['vendorTxCode'],
+        $transaction = $gateway->completePayPal([
             'amount' => $transactionDetails['amount'],
-            'description' => $transactionDetails['description'],
-            'currency' => $transactionDetails['currency'] ?? 'GBP',
+            'transactionId' => $transactionDetails['transactionId'],
+            'accept' => $transactionDetails['accept'],
         ]);
 
         $this->transactionResponse = $transaction->send();
@@ -45,7 +39,7 @@ class Refund extends Transaction implements TypeContract
     public function result(): string
     {
         if ($this->transactionResponse->isSuccessful()) {
-            return 'refunded';
+            return 'paid';
         }
 
         return '';
@@ -56,6 +50,6 @@ class Refund extends Transaction implements TypeContract
      */
     public function amount(): float
     {
-        return parent::amount() * -1;
+        throw new BadMethodCallException('Authorisation transactions do not provide a transaction amount');
     }
 }

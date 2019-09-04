@@ -8,10 +8,10 @@ use Oilstone\SagePay\Contracts\TransactionType;
 use Oilstone\SagePay\DataTypes\Transaction;
 use Oilstone\SagePay\Exceptions\SagePayException;
 use Oilstone\SagePay\Exceptions\SagePayReportsException;
-use Oilstone\SagePay\Http\Response;
 use Oilstone\SagePay\Registries\Config;
 use Oilstone\SagePay\TransactionTypes\Authorisation;
 use Oilstone\SagePay\TransactionTypes\Payment;
+use Oilstone\SagePay\TransactionTypes\PayPalAuthorisation;
 use Oilstone\SagePay\TransactionTypes\Refund;
 use Oilstone\SagePay\TransactionTypes\Repeat;
 
@@ -43,7 +43,6 @@ class SagePay
     /**
      * @param array $transactionDetails
      * @return TransactionType
-     * @throws SagePayException
      */
     public function payment(array $transactionDetails): TransactionType
     {
@@ -53,7 +52,6 @@ class SagePay
     /**
      * @param array $transactionDetails
      * @return TransactionType
-     * @throws SagePayException
      */
     public function refund(array $transactionDetails): TransactionType
     {
@@ -63,7 +61,6 @@ class SagePay
     /**
      * @param array $transactionDetails
      * @return TransactionType
-     * @throws SagePayException
      */
     public function repeat(array $transactionDetails): TransactionType
     {
@@ -96,11 +93,19 @@ class SagePay
     /**
      * @param array $authorisationDetails
      * @return TransactionType
-     * @throws SagePayException
      */
     public function authorisation(array $authorisationDetails): TransactionType
     {
         return (new Authorisation($authorisationDetails))->send();
+    }
+
+    /**
+     * @param array $authorisationDetails
+     * @return TransactionType
+     */
+    public function payPalAuthorisation(array $authorisationDetails): TransactionType
+    {
+        return (new PayPalAuthorisation($authorisationDetails))->send();
     }
 
     /**
@@ -113,13 +118,5 @@ class SagePay
     public function batches(Carbon $startDate, Carbon $endDate): Collection
     {
         return (new Reports())->batchList($startDate, $endDate);
-    }
-
-    /**
-     * @return Collection
-     */
-    public function responses(): Collection
-    {
-        return collect(Response::responses());
     }
 }
