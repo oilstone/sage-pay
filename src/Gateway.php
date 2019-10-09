@@ -5,6 +5,7 @@ namespace Oilstone\SagePay;
 use Oilstone\SagePay\Registries\Config;
 use Omnipay\Common\GatewayInterface;
 use Omnipay\Omnipay;
+use Omnipay\SagePay\Message\DirectAuthorizeRequest;
 
 /**
  * Class Gateway
@@ -23,7 +24,7 @@ class Gateway
         $gateway = OmniPay::create('SagePay\Direct', HttpClient::make(!$testMode))->initialize([
             'vendor' => Config::get('vendor_name'),
             'testMode' => $testMode,
-            'apply3DSecure' => $transactionDetails['apply3DSecure'] ?? true,
+            'apply3DSecure' => $transactionDetails['apply3DSecure'] ?? DirectAuthorizeRequest::APPLY_3DSECURE_APPLY,
         ]);
 
         return $gateway;
