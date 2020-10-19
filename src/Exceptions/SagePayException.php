@@ -3,7 +3,6 @@
 namespace Oilstone\SagePay\Exceptions;
 
 use Exception;
-use Oilstone\Logging\Log;
 use Throwable;
 
 /**
@@ -45,8 +44,6 @@ class SagePayException extends Exception
         $this->code = $code;
 
         $this->previous = $previous;
-
-        Log::error(static::$logId . ' - Sage Pay exception', compact('errorCode', 'message', 'code'));
     }
 
     /**
