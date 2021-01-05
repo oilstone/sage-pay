@@ -2,9 +2,10 @@
 
 namespace Oilstone\SagePay\Reports;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Oilstone\SagePay\Exceptions\SagePayException;
 use Oilstone\SagePay\Exceptions\SagePayReportsException;
-use Oilstone\SagePay\Http\Client;
 use Oilstone\SagePay\Registries\Config;
 use Sabre\Xml\Reader;
 use function Sabre\Xml\Deserializer\keyValue;
@@ -100,6 +101,7 @@ class Command
      * @return array
      * @throws SagePayException
      * @throws SagePayReportsException
+     * @throws GuzzleException
      */
     public function send(): array
     {
@@ -119,7 +121,7 @@ class Command
      * @return $this
      * @throws SagePayException
      */
-    protected function checkResponse()
+    protected function checkResponse(): Command
     {
         $error = [];
 
