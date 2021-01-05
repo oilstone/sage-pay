@@ -2,8 +2,7 @@
 
 namespace Oilstone\SagePay;
 
-use Http\Adapter\Guzzle6\Client as HttpAdapter;
-use Oilstone\SagePay\Http\Client as HttpClientWrapper;
+use GuzzleHttp\Client as HttpClientAdapter;
 use Omnipay\Common\Http\Client;
 
 /**
@@ -18,8 +17,8 @@ class HttpClient
      */
     public static function make(bool $verifySSL = true): Client
     {
-        return new Client(new HttpAdapter(new HttpClientWrapper([
+        return new Client(new HttpClientAdapter([
             'verify' => $verifySSL,
-        ])));
+        ]));
     }
 }
