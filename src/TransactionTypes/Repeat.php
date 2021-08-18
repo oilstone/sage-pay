@@ -24,10 +24,6 @@ class Repeat extends Transaction implements TypeContract
      */
     public function result(): string
     {
-        if (false) {
-            return 'amended';
-        }
-
         return '';
     }
 }
