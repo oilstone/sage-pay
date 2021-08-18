@@ -13,12 +13,13 @@ class HttpClient
 {
     /**
      * @param bool $verifySSL
+     * @param array $config
      * @return Client
      */
-    public static function make(bool $verifySSL = true): Client
+    public static function make(bool $verifySSL = true, array $config = []): Client
     {
-        return new Client(new HttpClientAdapter([
+        return new Client(new HttpClientAdapter(array_merge([
             'verify' => $verifySSL,
-        ]));
+        ], $config)));
     }
 }

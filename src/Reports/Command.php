@@ -101,14 +101,17 @@ class Command
      * @return array
      * @throws SagePayException
      * @throws SagePayReportsException
-     * @throws GuzzleException
      */
     public function send(): array
     {
-        $response = $this->client->post(Config::get('reporting_url'), [
-            'form_params' => ['XML' => $this->commandXml],
-            'verify' => false,
-        ]);
+        try {
+            $response = $this->client->post(Config::get('reporting_url'), [
+                'form_params' => ['XML' => $this->commandXml],
+                'verify' => false,
+            ]);
+        } catch (GuzzleException $e) {
+            throw new SagePayException($e->getCode() ?? 500, $e->getMessage() ?? "Sage Pay reporting error");
+        }
 
         $this->response = $this->xml->toArray($response->getBody()->getContents(), $this->elementMap);
 
@@ -139,7 +142,7 @@ class Command
             }
         }
 
-        if($error) {
+        if ($error) {
             throw new SagePayException($error['code'] ?? 500, $error['message'] ?? "Sage Pay reporting error");
         }
 

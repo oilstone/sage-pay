@@ -3,7 +3,7 @@
 namespace Oilstone\SagePay\DataTypes;
 
 use Oilstone\SagePay\Contracts\DataType as TypeContract;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 
 /**
  * Class Transaction
