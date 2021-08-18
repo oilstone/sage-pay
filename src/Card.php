@@ -2,7 +2,7 @@
 
 namespace Oilstone\SagePay;
 
-use Omnipay\Common\CreditCard;
+use Omnipay\Common\CreditCard as BaseCreditCard;
 use Omnipay\SagePay\PayPal;
 
 /**
@@ -13,9 +13,9 @@ class Card
 {
     /**
      * @param array $cardDetails
-     * @return CreditCard
+     * @return BaseCreditCard
      */
-    public static function make(array $cardDetails): CreditCard
+    public static function make(array $cardDetails): BaseCreditCard
     {
         $data = array_filter([
             'billingTitle' => $cardDetails['billingTitle'] ?? $cardDetails['customerTitle'] ?? null,
