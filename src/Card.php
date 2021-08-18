@@ -49,6 +49,7 @@ class Card
         $start = str_split($cardDetails['startDate'] ?? '', 2);
 
         return new CreditCard(array_merge($data, array_filter([
+            'cardType' => $cardDetails['type'] ?? $cardDetails['cardType'] ?? null,
             'number' => $cardDetails['number'] ?? $cardDetails['cardNumber'] ?? null,
             'expiryMonth' => $cardDetails['expiryMonth'] ?? $expiry[0] ?? null,
             'expiryYear' => $cardDetails['expiryYear'] ?? $expiry[1] ?? null,
