@@ -31,6 +31,13 @@ return [
 
     'reporting_password' => env('SAGEPAY_WEB_PASSWORD'),
 
+    /**
+     * HTTP client config
+     */
+    'http_config' => [
+        'proxy' => env('SAGEPAY_HTTP_PROXY', ''),
+    ],
+
     /*
      * Sage Pay error codes
      */
