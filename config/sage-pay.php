@@ -36,6 +36,7 @@ return [
      */
     'http_config' => [
         'proxy' => env('SAGEPAY_HTTP_PROXY', ''),
+        'cert' => env('SAGEPAY_HTTP_CA_CERT', ''),
     ],
 
     /*
